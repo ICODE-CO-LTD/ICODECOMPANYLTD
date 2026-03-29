@@ -18,7 +18,8 @@ import {
   Workflow,
   ExternalLink,
   Users,
-  Server
+  Server,
+  Code2
 } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Section from './components/Section';
