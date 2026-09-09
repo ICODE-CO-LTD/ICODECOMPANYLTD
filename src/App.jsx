@@ -18,12 +18,12 @@ import {
   Workflow,
   ExternalLink,
   Users,
-  Server,
-  Code2
+  Server
 } from 'lucide-react';
+import icodelogo from './assets/icodelogo1.png';
 import Navbar from './components/Navbar';
 import Section from './components/Section';
-import heroBg from './assets/hero_bg.png';
+import Globe3D from './components/Globe3D';
 import imoveImg from './assets/imove_showcase.png';
 import './index.css';
 
@@ -56,36 +56,78 @@ export default function App() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src={heroBg} 
-            alt="Hero Background" 
-            className="w-full h-full object-cover opacity-30 scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-bg-dark/20 via-bg-dark/80 to-bg-dark"></div>
-        </div>
-        
-        <div className="container-custom relative z-10 px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <h1 className="text-5xl md:text-7xl lg:text-8xl mb-6">
-              Engineering Scalable <br />
-              <span className="gradient-text">Digital Infrastructure</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-slate-400 max-w-2xl mb-10">
-              Enterprise Systems • Cloud Platforms • Mobility Technology. <br />
-              Building digital systems that scale with ambition.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="btn-primary">View Solutions</button>
-              <button className="btn-outline">Flagship Project: iMove</button>
-            </div>
-          </motion.div>
+      {/* Hero Section — Globe CTA */}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#050508]">
+        {/* Subtle radial gradient backdrop */}
+        <div className="absolute inset-0 z-0" style={{
+          background: 'radial-gradient(ellipse 80% 60% at 70% 50%, rgba(33,150,243,0.08) 0%, transparent 70%), radial-gradient(ellipse 50% 80% at 10% 60%, rgba(109,190,69,0.05) 0%, transparent 70%)'
+        }} />
+
+        <div className="container-custom relative z-10 w-full px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+            {/* Left — text */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9 }}
+              className="order-2 lg:order-1"
+            >
+              <motion.span
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.3em] text-primary bg-primary/10 border border-primary/20 px-4 py-2 rounded-full mb-8"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                Engineering Digital Infrastructure
+              </motion.span>
+
+              <h1 className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight">
+                Engineering Scalable <br />
+                <span className="gradient-text">Digital Infrastructure</span>
+              </h1>
+
+              <p className="text-xl md:text-2xl text-slate-400 max-w-xl mb-10 leading-relaxed">
+                Enterprise Systems • Cloud Platforms • Mobility Technology.<br />
+                Building digital systems that scale with ambition.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button className="btn-primary">View Solutions</button>
+                <button className="btn-outline">Flagship Project: iMove</button>
+              </div>
+
+              {/* City pills */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2 }}
+                className="flex flex-wrap gap-2 mt-10"
+              >
+                {['Kigali', 'London', 'Dubai', 'New York', 'Singapore'].map((city) => (
+                  <span key={city} className="text-xs font-medium text-slate-500 border border-white/8 px-3 py-1 rounded-full bg-white/3">
+                    📍 {city}
+                  </span>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* Right — Globe */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+              className="order-1 lg:order-2 relative h-[420px] md:h-[560px] flex items-center justify-center"
+            >
+              {/* Glow ring behind globe */}
+              <div className="absolute inset-0 rounded-full" style={{
+                background: 'radial-gradient(circle, rgba(33,150,243,0.15) 0%, transparent 70%)'
+              }} />
+              <Globe3D className="w-full h-full" />
+            </motion.div>
+
+          </div>
         </div>
       </section>
 
@@ -243,7 +285,7 @@ export default function App() {
           {["IZERE Joshua", "KIRENGA Kenny"].map((name, i) => (
             <div key={i} className="text-center glass-card">
                 <div className="w-20 h-20 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/5">
-                    <Code2 className="text-slate-400" size={32} />
+                    <span className="text-2xl font-black" style={{ color: '#6DBE45' }}>{name.charAt(0)}</span>
                 </div>
                 <h4 className="text-lg font-bold">{name}</h4>
                 <p className="text-slate-500 text-xs font-black uppercase tracking-widest mt-1">Developer</p>
@@ -261,8 +303,10 @@ export default function App() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-6">
-                <div className="bg-primary p-1 rounded-lg"><Code2 className="text-white w-5 h-5" /></div>
-                <span className="text-xl font-black text-white tracking-tighter">ICODE<span className="text-primary">.RW</span></span>
+                <img src={icodelogo} alt="ICode Logo" className="w-10 h-10 object-contain" />
+                <span className="text-xl font-black tracking-tighter">
+                  <span style={{ color: '#2196F3' }}>I</span><span style={{ color: '#6DBE45' }}>Code</span><span className="text-primary">.RW</span>
+                </span>
               </div>
               <p className="text-slate-500 max-w-sm mb-6 leading-relaxed">
                 A software engineering company focused on designing, building, and deploying secure, scalable digital infrastructure.

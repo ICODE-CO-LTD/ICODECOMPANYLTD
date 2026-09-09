@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Code2 } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import icodelogo from '../assets/icodelogo1.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,10 +31,10 @@ const Navbar = () => {
           animate={{ opacity: 1, x: 0 }}
           className="flex items-center gap-2"
         >
-          <div className="bg-primary p-1.5 rounded-lg">
-            <Code2 className="text-white w-6 h-6" />
-          </div>
-          <span className="text-xl font-black text-white tracking-tighter">ICODE<span className="text-primary">.RW</span></span>
+          <img src={icodelogo} alt="ICode Logo" className="w-10 h-10 object-contain" />
+          <span className="text-xl font-black tracking-tighter">
+            <span style={{ color: '#2196F3' }}>I</span><span style={{ color: '#6DBE45' }}>Code</span><span className="text-primary">.RW</span>
+          </span>
         </motion.div>
 
         {/* Desktop Nav */}
