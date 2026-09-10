@@ -57,7 +57,7 @@ export default function App() {
       <Navbar />
 
       {/* Hero Section — Globe CTA */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#050508]">
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#050508] pt-28 pb-12">
         {/* Subtle radial gradient backdrop */}
         <div className="absolute inset-0 z-0" style={{
           background: 'radial-gradient(ellipse 80% 60% at 70% 50%, rgba(33,150,243,0.08) 0%, transparent 70%), radial-gradient(ellipse 50% 80% at 10% 60%, rgba(109,190,69,0.05) 0%, transparent 70%)'
@@ -77,25 +77,25 @@ export default function App() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.3em] text-primary bg-primary/10 border border-primary/20 px-4 py-2 rounded-full mb-8"
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-primary bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full mb-6"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 Engineering Digital Infrastructure
               </motion.span>
 
-              <h1 className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
                 Engineering Scalable <br />
                 <span className="gradient-text">Digital Infrastructure</span>
               </h1>
 
-              <p className="text-xl md:text-2xl text-slate-400 max-w-xl mb-10 leading-relaxed">
+              <p className="text-lg md:text-xl text-slate-400 max-w-xl mb-8 leading-relaxed">
                 Enterprise Systems • Cloud Platforms • Mobility Technology.<br />
                 Building digital systems that scale with ambition.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="btn-primary">View Solutions</button>
-                <button className="btn-outline">Flagship Project: iMove</button>
+                <button className="btn-primary py-3 px-6 text-sm">View Solutions</button>
+                <button className="btn-outline py-3 px-6 text-sm">Flagship Project: iMove</button>
               </div>
 
               {/* City pills */}
@@ -106,8 +106,8 @@ export default function App() {
                 className="flex flex-wrap gap-2 mt-10"
               >
                 {['Kigali', 'London', 'Dubai', 'New York', 'Singapore'].map((city) => (
-                  <span key={city} className="text-xs font-medium text-slate-500 border border-white/8 px-3 py-1 rounded-full bg-white/3">
-                    📍 {city}
+                  <span key={city} className="text-xs font-medium text-slate-400 border border-white/10 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-default">
+                    <span className="text-primary mr-1">📍</span>{city}
                   </span>
                 ))}
               </motion.div>

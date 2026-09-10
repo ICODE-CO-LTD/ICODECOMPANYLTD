@@ -47,14 +47,14 @@ function Arc({ from, to, color, delay = 0 }) {
   useFrame((_, delta) => {
     progress.current = (progress.current + delta * 0.4) % 2;
     const t = Math.min(progress.current, 1);
-    const visible = points.slice(0, Math.floor(t * points.length));
-    if (visible.length < 2) return;
-    ref.current.geometry.setFromPoints(visible);
+    const count = Math.floor(t * points.length);
+    if (ref.current && ref.current.geometry) {
+      ref.current.geometry.setDrawRange(0, count);
+    }
   });
 
   return (
-    <line ref={ref}>
-      <bufferGeometry />
+    <line ref={ref} geometry={fullGeom}>
       <lineBasicMaterial color={color} transparent opacity={0.7} linewidth={1.5} />
     </line>
   );
@@ -77,93 +77,35 @@ function CityDot({ lat, lng }) {
   );
 }
 
-// The main globe mesh — uses canvas-drawn texture
+// The main globe mesh — uses photo-realistic texture
 function GlobeMesh() {
   const meshRef = useRef();
-
-  // Build a procedural dot-grid earth texture
-  const texture = useMemo(() => {
-    const size = 2048;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size / 2;
-    const ctx = canvas.getContext('2d');
-
-    // Deep space background
-    ctx.fillStyle = '#0a0e1a';
-    ctx.fillRect(0, 0, size, size / 2);
-
-    // Draw dot-grid land pattern (simplified geographic outline using lat/lng dots)
-    const dotSize = 2.5;
-    const rows = 180;
-    const cols = 360;
-
-    // Rough continental mask via simple geographic heuristic
-    function isLand(lat, lng) {
-      // North America
-      if (lat > 15 && lat < 72 && lng > -170 && lng < -50) {
-        if (lat > 50 || (lat > 20 && lng > -120 && lng < -60)) return true;
-      }
-      // South America
-      if (lat > -55 && lat < 15 && lng > -82 && lng < -34) return true;
-      // Europe
-      if (lat > 35 && lat < 72 && lng > -10 && lng < 40) return true;
-      // Africa
-      if (lat > -35 && lat < 37 && lng > -18 && lng < 52) return true;
-      // Asia
-      if (lat > 0 && lat < 75 && lng > 25 && lng < 145) return true;
-      // South/SE Asia
-      if (lat > -10 && lat < 30 && lng > 60 && lng < 145) return true;
-      // Australia
-      if (lat > -43 && lat < -10 && lng > 113 && lng < 155) return true;
-      // Greenland
-      if (lat > 60 && lat < 84 && lng > -55 && lng < -15) return true;
-      return false;
-    }
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const lat = 90 - (row / rows) * 180;
-        const lng = (col / cols) * 360 - 180;
-        if (isLand(lat, lng)) {
-          const x = (col / cols) * size;
-          const y = (row / rows) * (size / 2);
-          ctx.beginPath();
-          ctx.arc(x, y, dotSize, 0, Math.PI * 2);
-          ctx.fillStyle = '#1a3d5c';
-          ctx.fill();
-        }
-      }
-    }
-
-    // Highlight dots near key cities
-    const cityColors = ['#2196F3', '#6DBE45', '#4da6ff'];
-    CITY_MARKERS.forEach((city, i) => {
-      const x = ((city.lng + 180) / 360) * size;
-      const y = ((90 - city.lat) / 180) * (size / 2);
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = cityColors[i % cityColors.length];
-      ctx.fill();
-    });
-
-    const tex = new THREE.CanvasTexture(canvas);
-    return tex;
+  
+  // Load realistic earth textures
+  const [colorMap, bumpMap, specularMap] = useMemo(() => {
+    const loader = new THREE.TextureLoader();
+    // Using reliable CDNs for three.js planet textures
+    return [
+      loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'),
+      loader.load('https://unpkg.com/three-globe/example/img/earth-topology.png'),
+      loader.load('https://unpkg.com/three-globe/example/img/earth-water.png')
+    ];
   }, []);
 
   useFrame((_, delta) => {
-    if (meshRef.current) meshRef.current.rotation.y += delta * 0.08;
+    if (meshRef.current) meshRef.current.rotation.y += delta * 0.05;
   });
 
   return (
     <mesh ref={meshRef}>
       <sphereGeometry args={[1, 64, 64]} />
       <meshPhongMaterial
-        map={texture}
-        specular={new THREE.Color(0x2196f3)}
-        shininess={8}
-        emissive={new THREE.Color(0x0d1a2e)}
-        emissiveIntensity={0.3}
+        map={colorMap}
+        bumpMap={bumpMap}
+        bumpScale={0.015}
+        specularMap={specularMap}
+        specular={new THREE.Color('grey')}
+        shininess={15}
       />
     </mesh>
   );
@@ -173,58 +115,32 @@ function GlobeMesh() {
 function Atmosphere() {
   return (
     <mesh>
-      <sphereGeometry args={[1.08, 64, 64]} />
+      <sphereGeometry args={[1.04, 64, 64]} />
       <meshPhongMaterial
-        color="#2196F3"
-        transparent
-        opacity={0.06}
-        side={THREE.FrontSide}
-      />
-    </mesh>
-  );
-}
-
-// Outer glow ring
-function OuterGlow() {
-  return (
-    <mesh>
-      <sphereGeometry args={[1.15, 64, 64]} />
-      <meshBasicMaterial
         color="#4da6ff"
         transparent
-        opacity={0.03}
+        opacity={0.15}
+        blending={THREE.AdditiveBlending}
         side={THREE.BackSide}
       />
     </mesh>
   );
 }
 
-// Arc pairs connecting cities
-const ARC_PAIRS = [
-  { from: CITY_MARKERS[3], to: CITY_MARKERS[0], color: '#6DBE45', delay: 0 },   // Kigali → NY
-  { from: CITY_MARKERS[3], to: CITY_MARKERS[1], color: '#2196F3', delay: 0.4 }, // Kigali → London
-  { from: CITY_MARKERS[3], to: CITY_MARKERS[8], color: '#6DBE45', delay: 0.8 }, // Kigali → Dubai
-  { from: CITY_MARKERS[0], to: CITY_MARKERS[2], color: '#4da6ff', delay: 1.2 }, // NY → Tokyo
-  { from: CITY_MARKERS[1], to: CITY_MARKERS[4], color: '#6DBE45', delay: 0.2 }, // London → Paris
-  { from: CITY_MARKERS[7], to: CITY_MARKERS[2], color: '#2196F3', delay: 0.6 }, // Singapore → Tokyo
-  { from: CITY_MARKERS[5], to: CITY_MARKERS[8], color: '#4da6ff', delay: 1.0 }, // Delhi → Dubai
-  { from: CITY_MARKERS[6], to: CITY_MARKERS[7], color: '#6DBE45', delay: 1.4 }, // Sydney → Singapore
-];
-
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[5, 3, 5]} intensity={1.5} color="#ffffff" />
-      <pointLight position={[-5, -3, -5]} intensity={0.3} color="#2196F3" />
+      <ambientLight intensity={0.05} />
+      {/* Main sun light from top right */}
+      <directionalLight position={[10, 10, 5]} intensity={2} color="#ffffff" />
+      {/* Subtle blue fill light from the back */}
+      <directionalLight position={[-10, 0, -10]} intensity={0.5} color="#2196F3" />
+      
       <GlobeMesh />
       <Atmosphere />
-      <OuterGlow />
+      
       {CITY_MARKERS.map((city) => (
         <CityDot key={city.label} lat={city.lat} lng={city.lng} />
-      ))}
-      {ARC_PAIRS.map((arc, i) => (
-        <Arc key={i} from={arc.from} to={arc.to} color={arc.color} delay={arc.delay} />
       ))}
     </>
   );
