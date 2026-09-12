@@ -312,7 +312,7 @@ export default function App() {
                 A software engineering company focused on designing, building, and deploying secure, scalable digital infrastructure.
               </p>
               <div className="flex gap-4">
-                <a href="mailto:contact@icode.rw" className="bg-white/5 hover:bg-primary/20 p-3 rounded-xl transition-all"><Mail size={20} /></a>
+                <a href="mailto:icodecompanyltd@gmail.com" className="bg-white/5 hover:bg-primary/20 p-3 rounded-xl transition-all"><Mail size={20} /></a>
                 <a href="#" className="bg-white/5 hover:bg-primary/20 p-3 rounded-xl transition-all"><Globe size={20} /></a>
               </div>
             </div>
@@ -330,7 +330,7 @@ export default function App() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Mail size={16} className="text-primary" />
-                  <span className="text-slate-400 text-sm font-medium">contact@icode.rw</span>
+                  <span className="text-slate-400 text-sm font-medium">icodecompanyltd@gmail.com</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Globe size={16} className="text-primary" />
